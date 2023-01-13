@@ -14,7 +14,7 @@ class CheckerAppVersion:
     def __init__(self):
         self.id_app_ios = config.ID_APP_IOS
         self.id_app_android = config.ID_APP_ANDROID
-        self.version_app_android  = None
+        self.version_app_android = None
         self.version_app_ios = None
         
     def check_apps_version(self):

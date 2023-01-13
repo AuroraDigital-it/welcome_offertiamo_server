@@ -18,21 +18,21 @@ def periodic_job():
         time.sleep(1)
 
 
+try:
+    if not init.init_server():
+        print("###### THERE WAS AN ERROR, CHECK THE LOGS ######")
+        exit(-1)
+
+    dbg_message.show_message_debug(message="START DAEMONS",
+                                   type_message=dbg_message.TypeMessage.INFO)
+    # Start daemon
+    daemon = threading.Thread(target=periodic_job, daemon=True, name="PeriodicChecker")
+    daemon.start()
+
+except Exception as e:
+    dbg_message.show_message_debug(message="EXCEPTION CAPTURED IN MAIN",
+                                   type_message=dbg_message.TypeMessage.ERROR)
+    traceback.print_exc()
+
 if __name__ == '__main__':
-    try:
-        if not init.init_server():
-            print("###### THERE WAS AN ERROR, CHECK THE LOGS ######")
-            exit(-1)
-
-        dbg_message.show_message_debug(message="START DAEMONS",
-                                       type_message=dbg_message.TypeMessage.INFO)
-        # Start daemon
-        daemon = threading.Thread(target=periodic_job, daemon=True, name="PeriodicChecker")
-        daemon.start()
-
-        flask_app.run(host='0.0.0.0')
-
-    except Exception as e:
-        dbg_message.show_message_debug(message="EXCEPTION CAPTURED IN MAIN",
-                                       type_message=dbg_message.TypeMessage.ERROR)
-        traceback.print_exc()
+    flask_app.run(host="0.0.0.0")
