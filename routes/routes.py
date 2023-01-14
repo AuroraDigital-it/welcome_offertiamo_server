@@ -3,7 +3,7 @@ from helper.response_helper import make_response
 import constant.exception.generic_error_code_message as generic_error_code_message
 from singleton.checker_app_version_manager import checker_app_version_service
 
-base_api = Blueprint('base_api_v1', __name__, url_prefix='/welcome/')
+base_api = Blueprint('base_api_v1', __name__, url_prefix='/api/v1/welcome/')
 
 
 @base_api.route("/init")
