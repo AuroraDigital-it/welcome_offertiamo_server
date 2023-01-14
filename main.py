@@ -12,7 +12,7 @@ flask_app = init_services()
 
 
 def periodic_job():
-    schedule.every(12).hours.do(checker_app_version_service.check_apps_version)
+    schedule.every(10).minutes.do(checker_app_version_service.check_apps_version)
     while True:
         schedule.run_pending()
         time.sleep(1)
