@@ -20,7 +20,7 @@ def init():
 
 
 @base_api.route("/info")
-def init():
+def info():
     response = dict()
     response['last_update'] = checker_app_version_service.last_check
     response['android_version'] = checker_app_version_service.version_app_android \
