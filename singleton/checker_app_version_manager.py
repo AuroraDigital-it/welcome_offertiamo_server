@@ -47,7 +47,6 @@ class CheckerAppVersion:
             except Exception: 
                 self.version_app_android = None
         self.last_update = datetime.now().strftime("%d/%m/%y %H:%M:%S")
-        
 
     def is_newest_android_version(self, app_version: str):
         last_version = self.version_app_android
