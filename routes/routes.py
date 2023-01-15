@@ -17,3 +17,16 @@ def init():
         if checker_app_version_service.version_app_ios else ""
 
     return make_response(data=response, status_code=generic_error_code_message.no_error), 200
+
+
+@base_api.route("/info")
+def init():
+    response = dict()
+    response['last_update'] = checker_app_version_service.last_check
+    response['android_version'] = checker_app_version_service.version_app_android \
+        if checker_app_version_service.version_app_android else ""
+
+    response['ios_version'] = checker_app_version_service.version_app_ios \
+        if checker_app_version_service.version_app_ios else ""
+    return make_response(data=response, status_code=generic_error_code_message.no_error), 200
+    
