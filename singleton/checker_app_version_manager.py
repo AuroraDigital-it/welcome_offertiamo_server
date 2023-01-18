@@ -3,7 +3,7 @@ from packaging import version
 from itunes_app_scraper.scraper import AppStoreScraper, AppStoreException
 from google_play_scraper import app
 import config
-
+from datetime import datetime
 
 class PlatformType(Enum):
     IOS = 1
@@ -14,8 +14,9 @@ class CheckerAppVersion:
     def __init__(self):
         self.id_app_ios = config.ID_APP_IOS
         self.id_app_android = config.ID_APP_ANDROID
-        self.version_app_android  = None
+        self.version_app_android = None
         self.version_app_ios = None
+        self.last_update = None
         
     def check_apps_version(self):
         scraper = AppStoreScraper()
@@ -45,6 +46,7 @@ class CheckerAppVersion:
 
             except Exception: 
                 self.version_app_android = None
+        self.last_update = datetime.now().strftime("%d/%m/%y %H:%M:%S")
 
     def is_newest_android_version(self, app_version: str):
         last_version = self.version_app_android
