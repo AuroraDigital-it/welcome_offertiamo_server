@@ -22,7 +22,7 @@ class CheckerAppVersion:
         # Check iOS
         if self.id_app_ios:
             try:
-                result = scraper.get_app_details(self.id_app_ios, country="it", lang="it")
+                result = scraper.get_app_details(self.id_app_ios, country="it")
                 if result['version']:
                     self.version_app_ios = result['version']
                 else: 
