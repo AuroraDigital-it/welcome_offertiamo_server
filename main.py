@@ -1,38 +1,32 @@
-import config
-import helper.debug_message as dbg_message
-import init_server as init
 from services.factory_services import *
 from singleton.checker_app_version_manager import checker_app_version_service
-import traceback
-import schedule
-import threading
-import time
-
-flask_app = init_services()
-
-
-def periodic_job():
-    schedule.every(10).minutes.do(checker_app_version_service.check_apps_version)
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
-
-
-try:
-    if not init.init_server():
-        print("###### THERE WAS AN ERROR, CHECK THE LOGS ######")
+from helper.debug_message import *
+from flask_apscheduler import APScheduler
+from init_server import *
+class ConfigScheduler:
+    JOBS = [
+        {
+            "id": "periodic_job",
+            "func": "jobs:periodic_job",
+            "trigger": "interval",
+            "seconds": 10,
+        }
+    ]
+    SCHEDULER_API_ENABLED = True
+def create_app(config_app=ConfigScheduler()):
+    app = init_services()
+    app.config.from_object(ConfigScheduler())
+    if not init_server():
+        show_message_debug("Error", TypeMessage.ERROR)
         exit(-1)
+    scheduler = APScheduler()
+    scheduler.init_app(app)
+    scheduler.start()
+    return app
 
-    dbg_message.show_message_debug(message="START DAEMONS",
-                                   type_message=dbg_message.TypeMessage.INFO)
-    # Start daemon
-    daemon = threading.Thread(target=periodic_job, daemon=True, name="PeriodicChecker")
-    daemon.start()
-
-except Exception as e:
-    dbg_message.show_message_debug(message="EXCEPTION CAPTURED IN MAIN",
-                                   type_message=dbg_message.TypeMessage.ERROR)
-    traceback.print_exc()
+flask_app = create_app()
 
 if __name__ == '__main__':
-    flask_app.run(host="0.0.0.0")
+    show_message_debug("main")
+    checker_app_version_service.check_apps_version()
+    flask_app.run(host="0.0.0.0", port=6000)

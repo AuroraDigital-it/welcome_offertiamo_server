@@ -1,9 +1,10 @@
 from enum import Enum
-from packaging import version
 from itunes_app_scraper.scraper import AppStoreScraper, AppStoreException
+from constant.database_constants import *
 from google_play_scraper import app
 import config
 from datetime import datetime
+from singleton.redis_manager import redis_manager
 
 class PlatformType(Enum):
     IOS = 1
@@ -14,51 +15,36 @@ class CheckerAppVersion:
     def __init__(self):
         self.id_app_ios = config.ID_APP_IOS
         self.id_app_android = config.ID_APP_ANDROID
-        self.version_app_android = None
-        self.version_app_ios = None
-        self.last_update = None
-        
+
     def check_apps_version(self):
         scraper = AppStoreScraper()
         # Check iOS
-        if self.id_app_ios:
-            try:
-                result = scraper.get_app_details(self.id_app_ios, country="it")
-                if result['version']:
-                    self.version_app_ios = result['version']
-                else: 
-                    self.version_app_ios = None
-            except AppStoreException:
-                self.version_app_ios = None
+        try:
+            result = scraper.get_app_details(self.id_app_ios, country="it", lang="it", force=True)
+            if result['version']:
+                redis_manager.redis_db.set(apple_version_key, result['version'])
+            else:
+                redis_manager.redis_db.set(apple_version_key, "")
+        except AppStoreException:
+            redis_manager.redis_db.set(apple_version_key, "")
         
         # Check Android
-        if self.id_app_android:
-            try: 
-                result = app(
-                    self.id_app_android,
-                    lang=config.COUNTRY_STORE_ANDROID,
-                    country=config.LANG_STORE_ANDROID
-                )
-                if result and result['version']: 
-                    self.version_app_android = result['version']
-                else:
-                    self.version_app_android = None
+        try:
+            result = app(
+                self.id_app_android,
+                lang=config.COUNTRY_STORE_ANDROID,
+                country=config.LANG_STORE_ANDROID
+            )
+            if result and result['version']:
+                redis_manager.redis_db.set(android_version_key, result['version'])
+            else:
+                redis_manager.redis_db.set(android_version_key, "")
+        except Exception:
+            redis_manager.redis_db.set(android_version_key, "")
 
-            except Exception: 
-                self.version_app_android = None
-        self.last_update = datetime.now().strftime("%d/%m/%y %H:%M:%S")
-
-    def is_newest_android_version(self, app_version: str):
-        last_version = self.version_app_android
-        if not last_version:
-            return True
-        return version.parse(app_version) > version.parse(last_version)
-
-    def is_newest_ios_version(self, app_version: str):
-        last_version = self.version_app_ios
-        if not last_version:
-            return True
-        return version.parse(app_version) > version.parse(last_version)
+        # Last update
+        last_update = datetime.now().strftime("%d/%m/%y %H:%M:%S")
+        redis_manager.redis_db.set(last_update_version_key,last_update)
 
 
 checker_app_version_service = CheckerAppVersion()
