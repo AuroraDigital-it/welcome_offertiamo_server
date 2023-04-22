@@ -2,7 +2,7 @@ version: '3'
 
 services:
   web:
-    container_name: webserver_flask
+    container_name: webserver_flask_welcome
     build: .
     volumes:
       - .:/code
