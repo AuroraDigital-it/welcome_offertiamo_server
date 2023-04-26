@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  server:
+  webserver:
     container_name: webserver_flask_welcome
     build: .
     restart: unless-stopped
@@ -23,7 +23,7 @@ services:
     
   redis_welcome:
     hostname: redis
-    container_name: redis_db_welcome
+    container_name: redis_db_welcome_service
     restart: unless-stopped
     image: redis
     ports:
