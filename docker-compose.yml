@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  webserver:
-    container_name: webserver_flask_welcome
+  webserver_welcome:
+    container_name: webserver_welcome_flask
     build: .
     restart: unless-stopped
     volumes:
