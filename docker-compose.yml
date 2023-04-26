@@ -26,7 +26,7 @@ services:
     container_name: redis_db_welcome_service
     restart: unless-stopped
     image: redis
-    ports:
+    expose:
       - "6379"
     volumes:
       - ./data:/data
