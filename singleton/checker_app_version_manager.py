@@ -21,11 +21,11 @@ class CheckerAppVersion:
         # Check iOS
         try:
             result = scraper.get_app_details(self.id_app_ios, country="it", lang="it", force=True)
-            # if result['version']:
-            #     redis_manager.redis_db.set(apple_version_key, result['version'])
-            # else:
-            #     redis_manager.redis_db.set(apple_version_key, "")
-            redis_manager.redis_db.set(apple_version_key, "1.4.8")
+            if result and result['version']:
+                if result['version'] != "1.4.8":
+                    redis_manager.redis_db.set(apple_version_key, result['version'])
+            else:
+                redis_manager.redis_db.set(apple_version_key, "")
         except AppStoreException:
             redis_manager.redis_db.set(apple_version_key, "")
         
