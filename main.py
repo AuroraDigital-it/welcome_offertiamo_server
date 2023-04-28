@@ -20,6 +20,7 @@ def create_app(config_app=ConfigScheduler()):
         show_message_debug("Error", TypeMessage.ERROR)
         exit(-1)
     scheduler = APScheduler()
+    checker_app_version_service.check_apps_version()
     scheduler.init_app(app)
     scheduler.start()
     return app
