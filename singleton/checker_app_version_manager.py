@@ -36,11 +36,10 @@ class CheckerAppVersion:
                 lang=config.COUNTRY_STORE_ANDROID,
                 country=config.LANG_STORE_ANDROID
             )
-            # if result and result['version']:
-            #     redis_manager.redis_db.set(android_version_key, result['version'])
-            # else:
-            #     redis_manager.redis_db.set(android_version_key, "")
-            redis_manager.redis_db.set(android_version_key, "1.4.8")
+            if result and result['version']:
+                 redis_manager.redis_db.set(android_version_key, result['version'])
+            else:
+                 redis_manager.redis_db.set(android_version_key, "")
         except Exception:
             redis_manager.redis_db.set(android_version_key, "")
 

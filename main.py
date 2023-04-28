@@ -9,7 +9,7 @@ class ConfigScheduler:
             "id": "periodic_job",
             "func": "jobs:periodic_job",
             "trigger": "interval",
-            "minutes": 1,
+            "minutes": 15,
         }
     ]
     SCHEDULER_API_ENABLED = True
